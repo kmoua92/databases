@@ -13,3 +13,16 @@ module.exports = {
   }
 };
 
+var poster = function () {
+  // connection.query('mysql -u root < ../server/schema.sql');
+  connection.query('insert into `messages` values ("' + message.username + '", "' + message.message + '", "' + message.roomname + '", ' + messageId + ');', function(err, rows, fields) {
+    if (err) {
+      throw err;
+    }
+    console.log('===QUERY========',err, rows, fields);
+    
+    console.log('Successful Post! ', message);
+  });
+  // connection.query('select * from messages', function(err, rows, fields) {
+  // });
+};
