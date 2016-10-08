@@ -17,9 +17,7 @@ module.exports = {
       res.writeHead(200);
       res.end('messages get success');
     }, // a function which handles a get request for all messages
-    post: function (req, res) {
-      console.log('=====================');
-      
+    post: function (req, res) {      
 
       db.dbMessagePost(req.body);
 

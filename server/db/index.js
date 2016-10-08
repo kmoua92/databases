@@ -14,16 +14,12 @@ exports.dbMessagePost = function(message) {
   });
 
   connection.connect();
-  console.log('inside dbPost==========================', typeof message);
 
- connection.query('insert into `messages` values ("' + message.username + '", "' + message.message + '", "' + message.roomname + '", ' + messageId + ');', function(err, rows, fields) {
-   if (err) {
-     throw err;
-   }
-   console.log('===QUERY========',err, rows, fields);
-   
-   console.log('Successful Post! ', message);
- });
+  connection.query('insert into `messages` values ("' + message.username + '", "' + message.message + '", "' + message.roomname + '", ' + messageId + ');', function(err, rows, fields) {
+    if (err) {
+      throw err;
+    }
+  });
 
   connection.end();
 
@@ -38,16 +34,13 @@ exports.dbUserPost = function(message) {
   });
 
   connection.connect();
-  console.log('inside dbPost==========================', typeof message);
 
- connection.query('insert into `users` values ("' + message.username + '",' + messageId + ');', function(err, rows, fields) {
-   if (err) {
-     throw err;
-   }
-   console.log('===QUERY========',err, rows, fields);
-   
-   console.log('Successful Post! ', message);
- });
+  connection.query('insert into `users` values ("' + message.username + '",' + messageId + ');', function(err, rows, fields) {
+    if (err) {
+      throw err;
+    }
+  
+  });
 
   connection.end();
 
