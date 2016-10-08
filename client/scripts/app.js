@@ -51,14 +51,15 @@ class App {
 
 
   send(message) {
-    console.log('SENDING TO SERVER', message);
+    console.log('SENDING TO SERVER', JSON.stringify(message));
     // POST the message to the server
     $.ajax({
       url: this.server + '/messages',
       type: 'POST',
+      contentType: 'application/json',
       data: JSON.stringify(message),
       success: (data) => {
-        console.log('post to users===========', JSON.stringify(data))
+        console.log('post to users===========', JSON.stringify(data));
         this.fetch();
       },
       error: function (error) {
@@ -82,7 +83,7 @@ class App {
         if (this.messages.length) {
           this.oldMessagesEnd = this.messages[0].objectId;
         } else {
-          this.oldMessagesEnd = 1;
+          this.oldMessagesEnd = 0;
         }
         console.log('old message id', this.oldMessagesEnd);
 
@@ -114,7 +115,6 @@ class App {
   renderMessage() {
 
     if (!this.messages.length) {
-    console.log('=====================================')
       console.log('no messages');
       return;
     }

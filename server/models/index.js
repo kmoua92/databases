@@ -15,7 +15,7 @@ module.exports = {
 
 var poster = function () {
   // connection.query('mysql -u root < ../server/schema.sql');
-  connection.query('insert into `messages` values ("' + message.username + '", "' + message.message + '", "' + message.roomname + '", ' + messageId + ');', function(err, rows, fields) {
+  connection.query('insert into `messages` values ("' + message.username + '", "' + message.message + '", "' + message.roomname + '", ' + message.objectId + ');', function(err, rows, fields) {
     if (err) {
       throw err;
     }
