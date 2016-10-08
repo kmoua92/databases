@@ -31,36 +31,34 @@ class App {
   }
 
 
-  // $.ajax({
-  //   url: this.server + '/messages',
-  //   type: 'POST',
-  //   data: message,
-  //   success: (data) => {
-  //     console.log('post to messages============', data)
-  //     // Clear messages input
 
-  //     // Trigger a fetch to update the messages, pass true to animate
-  //     this.fetch();
-
-  //   },
-  //   error: function (error) {
-  //     console.error('chatterbox: Failed to send message', error);
-  //   }
-
-  // });
 
 
   send(message) {
     console.log('SENDING TO SERVER', JSON.stringify(message));
     // POST the message to the server
     $.ajax({
-      url: this.server + '/messages',
+      url: this.server + '/users',
       type: 'POST',
-      contentType: 'application/json',
       data: JSON.stringify(message),
+      contentType: 'application/json',
       success: (data) => {
-        console.log('post to users===========', JSON.stringify(data));
-        this.fetch();
+
+        $.ajax({
+          url: this.server + '/messages',
+          type: 'POST',
+          data: JSON.stringify(message),
+          contentType: 'application/json',
+          success: (data) => {
+
+            this.fetch();
+
+          },
+          error: function (error) {
+            console.error('chatterbox: Failed to send message', error);
+          }
+
+        });
       },
       error: function (error) {
         console.error('chatterbox: Failed to send user info', error);
@@ -77,11 +75,10 @@ class App {
       contentType: 'application/json',
       // data: 'order=-createdAt',
       success: (data) => {
-        console.log('app fetch data', data);
         data = JSON.parse(data);
 
         if (this.messages.length) {
-          this.oldMessagesEnd = this.messages[0].objectId;
+          this.oldMessagesEnd = this.messages[this.messages.length - 1].objectId;
         } else {
           this.oldMessagesEnd = 0;
         }
@@ -91,7 +88,7 @@ class App {
         
         for (var i = 0; i < this.messages.length; i++) {
           if (this.oldMessagesEnd === this.messages[i].objectId) {
-            this.index = i - 1;
+            this.index = i + 1;
             console.log('found id match', i, this.index);
             break;
           }
@@ -120,43 +117,43 @@ class App {
     }
 
     var i = this.index;
-    console.log('rendering messages ', this.messages);
-    for (i; i >= 0; i--) {
-      var ele = this.messages[i];
-      console.log('this ele', ele);
-      if (this.index > 0) {
-        this.index--;
+
+    if (this.index < this.messages.length) {
+      console.log('rendering messages ', this.messages);
+      for (i; i < this.messages.length; i++) {
+        var ele = this.messages[i];
+        // if (this.index < this.messages.length) {
+        //   this.index++;
+        // }
+
+        var example = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        // if (!ele.username || example.indexOf(ele.username[0].toLowerCase()) === -1) {
+        if (!ele.username) {
+          ele.username = 'anonymous';
+        }
+        if (!ele.roomname || example.indexOf(ele.roomname[0].toLowerCase()) === -1 || ele.roomname === null) {
+          ele.roomname = 'default';
+        }
+
+        ele.roomname = ele.roomname.replace(/\s+/g, '_');
+        ele.username = ele.username.replace(/\s+/g, '_'); 
+
+        this.renderRoom(ele.roomname);
+        
+        $('#' + ele.roomname + ' .messages').append('<p><span class="username" data-username=\"' + ele.username + '\" /><span class="message" /></p>');
+        // $('#'+ele.roomname + ' .messages .username').last().text(ele.username);
+
+        if (this.friends.indexOf(ele.username) !== -1) {
+          $('#' + ele.roomname + ' .messages .username').last().text(ele.username);
+          $('#' + ele.roomname + ' .messages .username').last().addClass('friend');
+        } else {
+          $('#' + ele.roomname + ' .messages .username').last().text(ele.username);
+        }
+
+        $('#' + ele.roomname + ' .messages  .message').last().text(': ' + ele.text);
+
+        // console.log('message rendered to ', ele.roomname)
       }
-
-      var example = 'abcdefghijklmnopqrstuvwxyz0123456789';
-      // if (!ele.username || example.indexOf(ele.username[0].toLowerCase()) === -1) {
-      console.log('username', ele.username);
-      if (!ele.username) {
-        ele.username = 'anonymous';
-      }
-      console.log('roomname', ele.roomname);
-      if (!ele.roomname || example.indexOf(ele.roomname[0].toLowerCase()) === -1 || ele.roomname === null) {
-        ele.roomname = 'default';
-      }
-
-      ele.roomname = ele.roomname.replace(/\s+/g, '_');
-      ele.username = ele.username.replace(/\s+/g, '_');
-
-      this.renderRoom(ele.roomname);
-      
-      $('#' + ele.roomname + ' .messages').append('<p><span class="username" data-username=\"' + ele.username + '\" /><span class="message" /></p>');
-      // $('#'+ele.roomname + ' .messages .username').last().text(ele.username);
-
-      if (this.friends.indexOf(ele.username) !== -1) {
-        $('#' + ele.roomname + ' .messages .username').last().text(ele.username);
-        $('#' + ele.roomname + ' .messages .username').last().addClass('friend');
-      } else {
-        $('#' + ele.roomname + ' .messages .username').last().text(ele.username);
-      }
-
-      $('#' + ele.roomname + ' .messages  .message').last().text(': ' + ele.text);
-
-      // console.log('message rendered to ', ele.roomname)
     }
   }
 

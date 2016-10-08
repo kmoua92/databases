@@ -14,7 +14,6 @@ module.exports = {
   messages: {
     get: function (req, res) {
       db.dbMessageGet((result) => { 
-        console.log('messages GET', JSON.stringify(result));
 
         res.writeHead(200);
         res.end(JSON.stringify(result));
@@ -23,7 +22,6 @@ module.exports = {
       
     }, // a function which handles a get request for all messages
     post: function (req, res) {      
-      console.log('SERVER SIDE REQBODY', req);
       db.dbMessagePost(req.body, (result) => {
 
       });
